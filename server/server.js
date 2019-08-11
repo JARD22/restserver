@@ -1,7 +1,9 @@
 require('./config/config');
 
 
+
 const express = require('express')
+const mongoose = require('mongoose');
 const app = express()
 const bodyParser = require('body-parser');
 
@@ -11,33 +13,18 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/usuario', function(req, res) {
-    res.json("Get usuario")
-})
-app.post('/usuario', function(req, res) {
-    let body = req.body
-
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            message: 'El nombres es necesario'
-        })
-    } else {
-        res.json({
-            persona: body
-        });
-    }
-})
+app.use(require('./routes/usuario'));
 
 
 
-app.put('/usuario/:id', function(req, res) {
-    res.json("Put usuario")
-})
-app.delete('/usuario', function(req, res) {
-    res.json("Delete usuario")
-})
 
+
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, (err, res) => {
+
+    if (err) throw err;
+    console.log('Base de datos en linea');
+
+});
 
 
 app.listen(process.env.PORT, () => {
