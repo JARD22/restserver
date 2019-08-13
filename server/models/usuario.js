@@ -51,7 +51,7 @@ let UsuarioSchema = new Schema({
 
 
 });
-
+// Quitamos el password del return
 UsuarioSchema.methods.toJSON = function() {
     let user = this;
     let userObject = user.toObject();

@@ -1,5 +1,11 @@
-const express = require('express')
-const Usuario = require('../models/usuario')
+const express = require('express');
+
+//Exportacion el modelo del usuario 
+const Usuario = require('../models/usuario');
+
+//Exportacion de la verificacion
+const { VerificaToken, Verifica_Admin_Role } = require('../middlewares/autorizacion');
+
 const bcrypt = require('bcryptjs');
 const _ = require('underscore');
 const app = express()
@@ -10,7 +16,7 @@ let salt = bcrypt.genSaltSync(10);
 
 
 // GET
-app.get('/usuario', function(req, res) {
+app.get('/usuario', VerificaToken, function(req, res) {
 
     let desde = req.query.desde || 0
     desde = Number(desde);
@@ -46,7 +52,7 @@ app.get('/usuario', function(req, res) {
 });
 
 // POST 
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [VerificaToken, Verifica_Admin_Role], function(req, res) {
 
     //Obtenemos el body(objeto que se manda desde el fronted)
     let body = req.body;
@@ -78,7 +84,7 @@ app.post('/usuario', function(req, res) {
 
 
 // PUT
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [VerificaToken, Verifica_Admin_Role], function(req, res) {
     let id = req.params.id;
 
     //                             Seleccionamos los unicos campos que se pueden actualizar
@@ -104,7 +110,7 @@ app.put('/usuario/:id', function(req, res) {
 
 
 // DELETE
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [VerificaToken, Verifica_Admin_Role], function(req, res) {
     let id = req.params.id;
 
     let CambiaEstado = {
